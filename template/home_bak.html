@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue.js Window Resize Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Window Size</h1>
+        <p>Width: {{ windowWidth }}</p>
+        <p>Height: {{ windowHeight }}</p>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                windowWidth: window.innerWidth,
+                windowHeight: window.innerHeight
+            },
+            created() {
+                // 添加resize事件监听器
+                window.addEventListener('resize', this.handleResize);
+            },
+            beforeDestroy() {
+                // 移除resize事件监听器
+                window.removeEventListener('resize', this.handleResize);
+            },
+            methods: {
+                handleResize() {
+                    this.windowWidth = window.innerWidth;
+                    this.windowHeight = window.innerHeight;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+

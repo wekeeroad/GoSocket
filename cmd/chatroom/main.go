@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/wekeeroad/GoSocket/logic"
 	"github.com/wekeeroad/GoSocket/server"
 )
 
@@ -19,6 +20,8 @@ var (
 )
 
 func main() {
+	go logic.Broadcaster.Start()
+
 	fmt.Printf(banner+"\n", addr)
 	server.RegisterHandle()
 	log.Fatal(http.ListenAndServe(addr, nil))

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/wekeeroad/GoSocket/logic"
 	"nhooyr.io/websocket"
 	"nhooyr.io/websocket/wsjson"
 )
@@ -32,18 +33,19 @@ func WebSocketHandleFunc(w http.ResponseWriter, req *http.Request) {
 
 	user := logic.NewUser(conn, nickname, req.RemoteAddr)
 	go user.SendMessage(req.Context())
-	user.MessageChannel <- logic.NewWelcomeMessage(nickname)
+	user.MessageChannel <- logic.NewWelcomeMessage(user)
 
-	msg := logic.NewNoticeMessage(nickname + "joined ChatRoom")
+	msg := logic.NewUserEnterMessage(user)
 	logic.Broadcaster.Broadcast(msg)
 
 	logic.Broadcaster.UserEntering(user)
 	log.Println("user:", nickname, "joins chat")
+	log.Println(logic.Broadcaster.GetUserList())
 
 	err = user.ReceiveMessage(req.Context())
 
 	logic.Broadcaster.UserLeaving(user)
-	msg = logic.NewNoticeMessage(user.NickName + "leaved ChatRoom")
+	msg = logic.NewUserLeaveMessage(user)
 	logic.Broadcaster.Broadcast(msg)
 	log.Println("user:", nickname, "leaves chat")
 

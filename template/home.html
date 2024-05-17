@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>聊天室 —— Go语言编程之旅</title>
+    <title>ChatRoom</title>
 
     <link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -29,7 +29,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="page-header">
-                <h2 class="text-center">欢迎来到《Go 语言编程之旅：一起用 Go 做项目》聊天室</h2>
+                <h2 class="text-center">We Chat Room</h2>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
                 if ("WebSocket" in window) {
                     let host = location.host;
                     // 打开一个 websocket 连接
-                    gWS = new WebSocket("ws://"+host+"/ws?nickname="+this.curUser.nickname+"&token="+this.curUser.token);
+                    gWS = new WebSocket("ws://"+host+"/ws?nickname="+this.curUser.nickname);
 
                     gWS.onopen = function () {
                         // WebSocket 已连接上的回调

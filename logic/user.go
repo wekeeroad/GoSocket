@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
+	"sync/atomic"
 	"time"
 
 	"nhooyr.io/websocket"
@@ -14,11 +15,12 @@ type User struct {
 	NickName       string        `json:"nickname"`
 	EnterAt        time.Time     `json:"enter_at"`
 	Addr           string        `json:"addr"`
-	MessageChannel chan *Message `josn:"-"`
+	MessageChannel chan *Message `json:"-"`
 
 	conn *websocket.Conn
 }
 
+var globalUID int32 = 0
 var System = &User{}
 
 func (u *User) SendMessage(ctx context.Context) {
@@ -45,4 +47,24 @@ func (u *User) ReceiveMessage(ctx context.Context) error {
 		sondMsg := NewMessage(u, receiveMsg["content"])
 		Broadcaster.Broadcast(sondMsg)
 	}
+}
+
+func (u *User) CloseMessageChannel() {
+	close(u.MessageChannel)
+}
+
+func NewUser(conn *websocket.Conn, nickname string, addr string) *User {
+	user := &User{
+		NickName:       nickname,
+		Addr:           addr,
+		EnterAt:        time.Now(),
+		MessageChannel: make(chan *Message, 32),
+		conn:           conn,
+	}
+
+	if user.UID == 0 {
+		user.UID = int(atomic.AddInt32(&globalUID, 1))
+	}
+
+	return user
 }

@@ -10,12 +10,12 @@ import (
 )
 
 func WebSocketHandleFunc(w http.ResponseWriter, req *http.Request) {
-	conn, err := websocket.Accept(w, req, nil)
+	conn, err := websocket.Accept(w, req, &websocket.AcceptOptions{InsecureSkipVerify: true})
 	if err != nil {
 		log.Println("websocket accept error:", err)
 		return
 	}
-
+	token := req.FormValue("token")
 	nickname := req.FormValue("nickname")
 	if l := len(nickname); l < 2 || l > 20 {
 		log.Println("nickname illegal: ", nickname)
@@ -31,9 +31,13 @@ func WebSocketHandleFunc(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	user := logic.NewUser(conn, nickname, req.RemoteAddr)
-	go user.SendMessage(req.Context())
-	user.MessageChannel <- logic.NewWelcomeMessage(user)
+	userToken := logic.NewUser(conn, token, nickname, req.RemoteAddr)
+	go userToken.SendMessage(req.Context())
+	userToken.MessageChannel <- logic.NewWelcomeMessage(userToken)
+
+	tmpUser := *userToken
+	user := &tmpUser
+	user.Token = ""
 
 	msg := logic.NewUserEnterMessage(user)
 	logic.Broadcaster.Broadcast(msg)

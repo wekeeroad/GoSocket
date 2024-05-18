@@ -36,6 +36,7 @@ func (b *broadcaster) Start() {
 		select {
 		case user := <-b.enteringChannel:
 			b.users[user.NickName] = user
+			OfflineProcessor.Send(user)
 		case user := <-b.leavingChannel:
 			delete(b.users, user.NickName)
 			user.CloseMessageChannel()
@@ -46,6 +47,7 @@ func (b *broadcaster) Start() {
 				}
 				user.MessageChannel <- msg
 			}
+			OfflineProcessor.Save(msg)
 		case nickname := <-b.checkUserChannel:
 			if _, ok := b.users[nickname]; ok {
 				b.checkUserCanInChannel <- false

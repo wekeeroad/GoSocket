@@ -133,7 +133,7 @@
                 if ("WebSocket" in window) {
                     let host = location.host;
                     // 打开一个 websocket 连接
-                    gWS = new WebSocket("ws://"+host+"/ws?nickname="+this.curUser.nickname);
+                    gWS = new WebSocket("ws://"+host+"/ws?nickname="+this.curUser.nickname+"&token="+this.curUser.token);
 
                     gWS.onopen = function () {
                         // WebSocket 已连接上的回调

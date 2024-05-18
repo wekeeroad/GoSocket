@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/wekeeroad/GoSocket/global"
 	"github.com/wekeeroad/GoSocket/logic"
 	"github.com/wekeeroad/GoSocket/server"
 )
@@ -18,6 +19,10 @@ var (
 	++++++++++++++++++++++++++++++++
 `
 )
+
+func init() {
+	global.Init()
+}
 
 func main() {
 	go logic.Broadcaster.Start()

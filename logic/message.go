@@ -17,6 +17,7 @@ type Message struct {
 	Type    int       `json:"type"`
 	Content string    `json:"content"`
 	MsgTime time.Time `json:"msg_time"`
+	Ats     []string  `json:"ats"`
 }
 
 func NewWelcomeMessage(user *User) *Message {

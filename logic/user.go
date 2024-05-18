@@ -3,6 +3,8 @@ package logic
 import (
 	"context"
 	"errors"
+	"fmt"
+	"regexp"
 	"sync/atomic"
 	"time"
 
@@ -45,6 +47,9 @@ func (u *User) ReceiveMessage(ctx context.Context) error {
 		}
 
 		sondMsg := NewMessage(u, receiveMsg["content"])
+		reg := regexp.MustCompile(`@[^\s@]{2,20}`)
+		sondMsg.Ats = reg.FindAllString(sondMsg.Content, -1)
+		fmt.Println(sondMsg)
 		Broadcaster.Broadcast(sondMsg)
 	}
 }
